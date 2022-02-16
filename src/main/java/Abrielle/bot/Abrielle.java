@@ -66,12 +66,13 @@ public class Abrielle {
                         GatewayIntent.GUILD_BANS
                 )
                 .disableCache(CacheFlag.VOICE_STATE)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .addEventListeners(
                         new CommandListener(this, CMD_HANDLER),
                         new Listener(this),
                         waiter
                 )
-                .setActivity(Activity.playing("Under development"))
+                .setActivity(Activity.watching("over all senpai's"))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();
 
