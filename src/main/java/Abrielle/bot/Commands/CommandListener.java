@@ -1,7 +1,6 @@
 package Abrielle.bot.Commands;
 
 import Abrielle.bot.Abrielle;
-import Abrielle.bot.Commands.Commands.Reactions.CmdBaka;
 import Abrielle.bot.Events.Listener;
 import Abrielle.constants.Colors;
 import Abrielle.util.Exceptions.AbrielleException;
@@ -9,7 +8,6 @@ import com.github.rainestormee.jdacommand.CommandHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;

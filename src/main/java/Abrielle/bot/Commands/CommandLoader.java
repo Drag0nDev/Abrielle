@@ -1,14 +1,12 @@
 package Abrielle.bot.Commands;
 
 import Abrielle.bot.Abrielle;
-import Abrielle.bot.Commands.Commands.Reactions.*;
+import Abrielle.bot.Commands.Commands.admin.CmdSay;
+import Abrielle.bot.Commands.Commands.admin.CmdSetActivity;
+import Abrielle.bot.Commands.Commands.reactions.*;
 import Abrielle.bot.Commands.Commands.fun.CmdCuterate;
 import Abrielle.bot.Commands.Commands.info.*;
 import Abrielle.bot.Events.Listener;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +21,9 @@ public class CommandLoader {
 
     public CommandLoader(Abrielle bot) {
         loadCommands(
+                //admin commands
+                new CmdSay(bot),
+
                 //fun commands
                 new CmdCuterate(bot),
 
@@ -32,6 +33,10 @@ public class CommandLoader {
                 new CmdPrefix(bot),
                 new CmdPing(bot),
                 new CmdServerAvatar(bot),
+                new CmdServerInfo(bot),
+
+                //owner commands
+                new CmdSetActivity(bot),
 
                 //reaction commands
                 new CmdBaka(bot),
