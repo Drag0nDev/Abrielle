@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @CommandDescription(
@@ -39,7 +39,7 @@ public record CmdPing(Abrielle bot) implements Command {
     private MessageEmbed ping(Date sent) {
         EmbedBuilder embed = new EmbedBuilder().setColor(Colors.NORMAL.getCode())
                 .setTitle(this.getDescription().name())
-                .setTimestamp(LocalDateTime.now());
+                .setTimestamp(ZonedDateTime.now());
 
         Date now = new Date();
         long ping = now.getTime() - sent.getTime();
