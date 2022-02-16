@@ -1,4 +1,4 @@
-package Abrielle.bot.Commands.Commands.Reactions;
+package Abrielle.bot.Commands.Commands.reactions;
 
 import Abrielle.bot.Abrielle;
 import Abrielle.bot.Commands.Command;
@@ -12,80 +12,92 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 @CommandDescription(
-        name = "pat",
-        description = "Pat someone",
-        triggers = {"pat"},
+        name = "hug",
+        description = "Hug someone",
+        triggers = {"hug"},
         attributes = {
                 @CommandAttribute(key = "category", value = "reactions"),
                 @CommandAttribute(key = "usage", value = "[command | alias] <mention/id>"),
                 @CommandAttribute(key = "examples", value = "`a!hug 418037700751261708`\n" +
-                        "`a!pat @Drag0n#6666`\n"),
+                        "`a!hug @Drag0n#6666`\n"),
         }
 )
 
-public record CmdPat(Abrielle bot) implements Command {
+public record CmdHug(Abrielle bot) implements Command {
 
     @Override
     public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) throws Exception {
-        ArrayList<Member> targets = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (event.getOption("user") == null)
-            targets.add(member);
+            members.add(member);
+        if (event.getOption("role") != null)
+            roles.add(Objects.requireNonNull(event.getOption("role")).getAsRole());
         else
-            targets.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
+            members.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
 
-        hook.sendMessage(pat(targets, member)).queue();
+        hook.sendMessage(hug(members, roles, member)).queue();
     }
 
     @Override
     public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws Exception {
         String[] args = bot.getArguments(msg);
-        ArrayList<Member> targets = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (args.length == 0)
-            targets.add(member);
+            members.add(member);
         else {
+            if (!msg.getMentionedRoles().isEmpty())
+                roles.addAll(msg.getMentionedRoles());
             if (!msg.getMentionedMembers().isEmpty())
-                targets.addAll(msg.getMentionedMembers());
+                members.addAll(msg.getMentionedMembers());
             else
-                for (String arg : args) targets.add(guild.retrieveMemberById(arg).complete());
+                for (String arg : args)
+                    if (arg.matches("\\d*"))
+                        members.add(guild.retrieveMemberById(arg).complete());
         }
 
-        tc.sendMessage(pat(targets, member)).queue();
+        tc.sendMessage(hug(members, roles, member)).queue();
     }
 
-    private Message pat(ArrayList<Member> targets, Member executor) {
+    private Message hug(ArrayList<Member> members, ArrayList<Role> roles, Member executor) {
         MessageBuilder message = new MessageBuilder();
         String content;
 
-        if (targets.get(0) == executor)
-            content = "*Pats* " + targets.get(0).getAsMention();
+        if (roles.isEmpty() && members.isEmpty())
+            content = "*Hugs* " + executor.getAsMention();
         else {
             String exec = executor.getNickname() != null ?
                     executor.getNickname() :
                     executor.getUser().getName();
             StringJoiner mentions = new StringJoiner(" ");
 
-            for (Member member : targets)
+            for (Member member : members)
                 mentions.add(member.getAsMention());
 
-            content = mentions + " you have been patted by **" + exec + "**!";
+            for (Role role : roles)
+                mentions.add(role.getAsMention());
+
+            content = mentions + " you have been hugged by **" + exec + "**!";
         }
 
         return message
                 .setContent(content)
                 .setEmbeds(new EmbedBuilder()
-                        .setTimestamp(LocalDateTime.now())
+                        .setTimestamp(ZonedDateTime.now())
                         .setColor(Colors.NORMAL.getCode())
-                        .setImage(ApiCalls.PAT.get())
+                        .setImage(ApiCalls.HUG.get())
                         .setFooter("Powered by nekos.life")
                         .build())
+                .denyMentions(Message.MentionType.ROLE)
                 .build();
     }
 }

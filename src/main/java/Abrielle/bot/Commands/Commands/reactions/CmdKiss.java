@@ -1,4 +1,4 @@
-package Abrielle.bot.Commands.Commands.Reactions;
+package Abrielle.bot.Commands.Commands.reactions;
 
 import Abrielle.bot.Abrielle;
 import Abrielle.bot.Commands.Command;
@@ -12,80 +12,92 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 @CommandDescription(
-        name = "hug",
-        description = "Hug someone",
-        triggers = {"hug"},
+        name = "kiss",
+        description = "Kiss someone",
+        triggers = {"kiss"},
         attributes = {
                 @CommandAttribute(key = "category", value = "reactions"),
                 @CommandAttribute(key = "usage", value = "[command | alias] <mention/id>"),
-                @CommandAttribute(key = "examples", value = "`a!hug 418037700751261708`\n" +
-                        "`a!hug @Drag0n#6666`\n"),
+                @CommandAttribute(key = "examples", value = "`a!kiss 418037700751261708`\n" +
+                        "`a!kiss @Drag0n#6666`\n"),
         }
 )
 
-public record CmdHug(Abrielle bot) implements Command {
+public record CmdKiss(Abrielle bot) implements Command {
 
     @Override
     public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) throws Exception {
-        ArrayList<Member> hugged = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (event.getOption("user") == null)
-            hugged.add(member);
+            members.add(member);
+        if (event.getOption("role") != null)
+            roles.add(Objects.requireNonNull(event.getOption("role")).getAsRole());
         else
-            hugged.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
+            members.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
 
-        hook.sendMessage(hug(hugged, member)).queue();
+        hook.sendMessage(kiss(members, roles, member)).queue();
     }
 
     @Override
     public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws Exception {
         String[] args = bot.getArguments(msg);
-        ArrayList<Member> hugged = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (args.length == 0)
-            hugged.add(member);
+            members.add(member);
         else {
+            if (!msg.getMentionedRoles().isEmpty())
+                roles.addAll(msg.getMentionedRoles());
             if (!msg.getMentionedMembers().isEmpty())
-                hugged.addAll(msg.getMentionedMembers());
+                members.addAll(msg.getMentionedMembers());
             else
-                for (String arg : args) hugged.add(guild.retrieveMemberById(arg).complete());
+                for (String arg : args)
+                    if (arg.matches("\\d*"))
+                        members.add(guild.retrieveMemberById(arg).complete());
         }
 
-        tc.sendMessage(hug(hugged, member)).queue();
+        tc.sendMessage(kiss(members, roles, member)).queue();
     }
 
-    private Message hug(ArrayList<Member> hugged, Member executor) {
+    private Message kiss(ArrayList<Member> members, ArrayList<Role> roles, Member executor) {
         MessageBuilder message = new MessageBuilder();
         String content;
 
-        if (hugged.get(0) == executor)
-            content = "*Hugs* " + hugged.get(0).getAsMention();
+        if (roles.isEmpty() && members.isEmpty())
+            content = "*Kisses* " + executor.getAsMention();
         else {
             String exec = executor.getNickname() != null ?
                     executor.getNickname() :
                     executor.getUser().getName();
             StringJoiner mentions = new StringJoiner(" ");
 
-            for (Member member : hugged)
+            for (Member member : members)
                 mentions.add(member.getAsMention());
 
-            content = mentions + " you have been hugged by **" + exec + "**!";
+            for (Role role : roles)
+                mentions.add(role.getAsMention());
+
+            content = mentions + " you have been kissed by **" + exec + "**!";
         }
 
         return message
                 .setContent(content)
                 .setEmbeds(new EmbedBuilder()
-                        .setTimestamp(LocalDateTime.now())
+                        .setTimestamp(ZonedDateTime.now())
                         .setColor(Colors.NORMAL.getCode())
-                        .setImage(ApiCalls.HUG.get())
+                        .setImage(ApiCalls.KISS.get())
                         .setFooter("Powered by nekos.life")
                         .build())
+                .denyMentions(Message.MentionType.ROLE)
                 .build();
     }
 }

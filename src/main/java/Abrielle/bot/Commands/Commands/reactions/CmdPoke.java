@@ -1,4 +1,4 @@
-package Abrielle.bot.Commands.Commands.Reactions;
+package Abrielle.bot.Commands.Commands.reactions;
 
 import Abrielle.bot.Abrielle;
 import Abrielle.bot.Commands.Command;
@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -33,47 +33,58 @@ public record CmdPoke(Abrielle bot) implements Command {
 
     @Override
     public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) throws Exception {
-        ArrayList<Member> targets = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (event.getOption("user") == null)
-            targets.add(member);
+            members.add(member);
+        if (event.getOption("role") != null)
+            roles.add(Objects.requireNonNull(event.getOption("role")).getAsRole());
         else
-            targets.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
+            members.add(Objects.requireNonNull(event.getOption("user")).getAsMember());
 
-        hook.sendMessage(poke(targets, member)).queue();
+        hook.sendMessage(poke(members, roles, member)).queue();
     }
 
     @Override
     public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws Exception {
         String[] args = bot.getArguments(msg);
-        ArrayList<Member> targets = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
 
         if (args.length == 0)
-            targets.add(member);
+            members.add(member);
         else {
+            if (!msg.getMentionedRoles().isEmpty())
+                roles.addAll(msg.getMentionedRoles());
             if (!msg.getMentionedMembers().isEmpty())
-                targets.addAll(msg.getMentionedMembers());
+                members.addAll(msg.getMentionedMembers());
             else
-                for (String arg : args) targets.add(guild.retrieveMemberById(arg).complete());
+                for (String arg : args)
+                    if (arg.matches("\\d*"))
+                        members.add(guild.retrieveMemberById(arg).complete());
         }
 
-        tc.sendMessage(poke(targets, member)).queue();
+        tc.sendMessage(poke(members, roles, member)).queue();
     }
 
-    private Message poke(ArrayList<Member> targets, Member executor) {
+    private Message poke(ArrayList<Member> members, ArrayList<Role> roles, Member executor) {
         MessageBuilder message = new MessageBuilder();
         String content;
 
-        if (targets.get(0) == executor)
-            content = "*Pokes* " + targets.get(0).getAsMention();
+        if (roles.isEmpty() && members.isEmpty())
+            content = "*Pokes* " + executor.getAsMention();
         else {
             String exec = executor.getNickname() != null ?
                     executor.getNickname() :
                     executor.getUser().getName();
             StringJoiner mentions = new StringJoiner(" ");
 
-            for (Member member : targets)
+            for (Member member : members)
                 mentions.add(member.getAsMention());
+
+            for (Role role : roles)
+                mentions.add(role.getAsMention());
 
             content = mentions + " you have been poked by **" + exec + "**!";
         }
@@ -81,11 +92,12 @@ public record CmdPoke(Abrielle bot) implements Command {
         return message
                 .setContent(content)
                 .setEmbeds(new EmbedBuilder()
-                        .setTimestamp(LocalDateTime.now())
+                        .setTimestamp(ZonedDateTime.now())
                         .setColor(Colors.NORMAL.getCode())
                         .setImage(ApiCalls.POKE.get())
                         .setFooter("Powered by nekos.life")
                         .build())
+                .denyMentions(Message.MentionType.ROLE)
                 .build();
     }
 }
