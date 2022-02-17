@@ -1,10 +1,12 @@
 package Abrielle.util.utils;
 
 import Abrielle.util.Exceptions.AbrielleException;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.google.gson.*;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -107,5 +109,81 @@ public class Utils {
             throw new AbrielleException("Text channel " + args[0] + " does not exist.");
 
         return channel;
+    }
+
+    public static @NotNull MessageEmbed jsonToEmbed(String str) {
+        JsonObject json = stringToJsonEmbed(str);
+
+        return jsonToEmbed(json);
+    }
+
+    private static JsonObject stringToJsonEmbed(String str) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonElement jsonElement = gson.fromJson(str, JsonElement.class);
+        return jsonElement.getAsJsonObject();
+    }
+
+    public static @NotNull MessageEmbed jsonToEmbed(@NotNull JsonObject json) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+
+        JsonPrimitive titleObj = json.getAsJsonPrimitive("title");
+        if (titleObj != null) // Make sure the object is not null before adding it onto the embed.
+            embedBuilder.setTitle(titleObj.getAsString());
+
+
+        JsonObject authorObj = json.getAsJsonObject("author");
+        if (authorObj != null) {
+            String authorName = authorObj.get("name").getAsString();
+            String authorIconUrl = authorObj.get("icon_url").getAsString();
+            if (authorIconUrl != null) // Make sure the icon_url is not null before adding it onto the embed. If its null then add just the author's name.
+                embedBuilder.setAuthor(authorName, authorIconUrl);
+            else
+                embedBuilder.setAuthor(authorName);
+        }
+
+        JsonPrimitive descObj = json.getAsJsonPrimitive("description");
+        if (descObj != null)
+            embedBuilder.setDescription(descObj.getAsString());
+
+
+        JsonPrimitive colorObj = json.getAsJsonPrimitive("color");
+        if (colorObj != null) {
+            String colorStr = colorObj.getAsString().replace("#", "0x");
+            Color color = new Color(Integer.decode(colorStr));
+            embedBuilder.setColor(color);
+        }
+
+        JsonArray fieldsArray = json.getAsJsonArray("fields");
+        if (fieldsArray != null) {
+            // Loop over the fields array and add each one by order to the embed.
+            fieldsArray.forEach(ele -> {
+                boolean inline;
+                String name = ele.getAsJsonObject().get("name").getAsString();
+                String content = ele.getAsJsonObject().get("value").getAsString();
+                if (ele.getAsJsonObject().get("inline") != null)
+                    inline = ele.getAsJsonObject().get("inline").getAsBoolean();
+                else
+                    inline = false;
+                embedBuilder.addField(name, content, inline);
+            });
+        }
+
+        JsonPrimitive thumbnailObj = json.getAsJsonPrimitive("thumbnail");
+        if (thumbnailObj != null) {
+            embedBuilder.setThumbnail(thumbnailObj.getAsString());
+        }
+
+        JsonObject footerObj = json.getAsJsonObject("footer");
+        if (footerObj != null) {
+            String content = footerObj.get("text").getAsString();
+            String footerIconUrl = footerObj.get("icon_url").getAsString();
+
+            if (footerIconUrl != null)
+                embedBuilder.setFooter(content, footerIconUrl);
+            else
+                embedBuilder.setFooter(content);
+        }
+
+        return embedBuilder.build();
     }
 }
