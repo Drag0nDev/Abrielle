@@ -23,9 +23,9 @@ import java.util.*;
         attributes = {
                 @CommandAttribute(key = "category", value = "info"),
                 @CommandAttribute(key = "usage", value = "[command | alias] <categoryname/commandname>"),
-                @CommandAttribute(key = "examples", value = "`h!help`\n" +
-                        "`h!help info`\n" +
-                        "`h!help slum`"),
+                @CommandAttribute(key = "examples", value = "`a!help`\n" +
+                        "`a!help info`\n" +
+                        "`a!help slum`"),
         }
 )
 
@@ -69,7 +69,7 @@ public class CmdHelp implements Command {
             }
 
             //check if it is an owner only command
-            if (cmd.getAttribute("category").contains("owner") && member.getUser().getId().equals(this.bot.getConfig().getOwner())) {
+            if (cmd.getAttribute("category").contains("owner") && !member.getUser().getId().equals(this.bot.getConfig().getOwner())) {
                 EmbedBuilder embed = new EmbedBuilder().setColor(Colors.ERROR.getCode())
                         .setTitle("Bot owner only command")
                         .setDescription("This command is not available for your use.\n" +
@@ -257,7 +257,6 @@ public class CmdHelp implements Command {
         }
 
         table.calculateColumnWidth();
-        System.out.println(table.render());
 
         return permissionsCheck.append("`").append(table.render()).append("`").toString();
     }
