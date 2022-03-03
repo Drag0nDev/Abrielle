@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -18,14 +19,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static @NotNull File getFile(@NotNull String fileName) throws URISyntaxException {
+    public static @NotNull InputStream getFile(@NotNull String fileName) throws URISyntaxException {
         ClassLoader classLoader = Utils.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
+        InputStream resource = classLoader.getResourceAsStream(fileName);
         if (resource == null) {
             throw new IllegalArgumentException("file not found! " + fileName);
         }
 
-        return new File(resource.toURI());
+        return resource;
     }
 
     public static @NotNull String getArgs(String raw, List<String> prefix) {
@@ -41,7 +42,7 @@ public class Utils {
             i++;
         }
 
-        raw = raw.toLowerCase().replaceFirst(Pattern.quote(usedPrefix), "");
+        raw = raw.replaceFirst(Pattern.quote(usedPrefix), "");
         return raw;
     }
 
@@ -185,5 +186,10 @@ public class Utils {
         }
 
         return embedBuilder.build();
+    }
+
+    public static String capitalize(String str) {
+        if (str.length() == 0) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 }

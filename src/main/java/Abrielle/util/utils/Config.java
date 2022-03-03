@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static Abrielle.util.utils.Utils.getFile;
@@ -21,7 +22,23 @@ public class Config {
         Object obj;
         JSONObject config;
 
-        obj = parser.parse(new FileReader(getFile("config.json")));
+        InputStream is = getFile("config.json");
+        StringBuilder in = new StringBuilder();
+
+        try (InputStreamReader streamReader =
+                     new InputStreamReader(is, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(streamReader)) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                in.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        obj = parser.parse(in.toString());
         config = (JSONObject) obj;
 
         this.token = (String) config.get("token");

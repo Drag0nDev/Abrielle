@@ -14,13 +14,13 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
-        <file>${DEV_HOME}/hinata.log</file>
+        <file>${DEV_HOME}/abrielle.log</file>
         <encoder>
             <pattern>%d{dd.MM.yyyy HH:mm:ss} [ %-5level] %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>${DEV_HOME}/archived/hinata-%d{dd.MM.yyyy}.%i.log</fileNamePattern>
+            <fileNamePattern>${DEV_HOME}/archived/abrielle-%d{dd.MM.yyyy}.%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>60</maxHistory>
             <totalSizeCap>20GB</totalSizeCap>

@@ -37,6 +37,7 @@ public class CmdHelp implements Command {
         this.bot = bot;
 
         categories.add("admin");
+        categories.add("fun");
         categories.add("info");
         categories.add("owner");
         categories.add("reactions");

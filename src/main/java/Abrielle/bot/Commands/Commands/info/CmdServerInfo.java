@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static Abrielle.util.utils.Utils.*;
 
@@ -82,8 +83,8 @@ public record CmdServerInfo(Abrielle bot) implements Command {
                 )
                 //other minor fields
                 .addField("Region", getRegion(guild), true)
-                .addField("Verification level", guild.getVerificationLevel().name(), true)
-                .addField("Boost tier", guild.getBoostTier().name(), true)
+                .addField("Verification level", capitalize(guild.getVerificationLevel().name()), true)
+                .addField("Boost tier", capitalize(guild.getBoostTier().name().replace("_", " ")), true)
                 .addField("Boosts", String.valueOf(guild.getBoostCount()), true);
 
         if (guild.getBannerUrl() != null)

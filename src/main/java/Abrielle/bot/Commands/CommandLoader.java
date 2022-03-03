@@ -3,6 +3,7 @@ package Abrielle.bot.Commands;
 import Abrielle.bot.Abrielle;
 import Abrielle.bot.Commands.Commands.admin.CmdSay;
 import Abrielle.bot.Commands.Commands.admin.CmdSetActivity;
+import Abrielle.bot.Commands.Commands.fun.CmdShip;
 import Abrielle.bot.Commands.Commands.owner.CmdShutdown;
 import Abrielle.bot.Commands.Commands.reactions.*;
 import Abrielle.bot.Commands.Commands.fun.CmdCuterate;
@@ -27,9 +28,11 @@ public class CommandLoader {
 
                 //fun commands
                 new CmdCuterate(bot),
+                new CmdShip(bot),
 
                 //info commands
                 new CmdAvatar(bot),
+                new CmdBanner(bot),
                 new CmdHelp(bot),
                 new CmdPrefix(bot),
                 new CmdPing(bot),

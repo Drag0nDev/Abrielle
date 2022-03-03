@@ -54,7 +54,7 @@ public record CmdCuterate(Abrielle bot) implements Command {
 
         if (arguments.length > 0) {
             if (!msg.getMentionedMembers().isEmpty()) {
-                target = msg.getMentionedMembers(guild).get(0);
+                target = msg.getMentionedMembers().get(0);
             } else {
                 target = guild.getMemberById(arguments[0]);
             }
