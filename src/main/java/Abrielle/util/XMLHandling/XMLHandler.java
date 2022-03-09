@@ -10,7 +10,6 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.io.File;
 
@@ -24,7 +23,7 @@ public class XMLHandler {
 
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        jaxbMarshaller.marshal(logs, new File("logs_" + guild.getId() + ".xml"));
+        jaxbMarshaller.marshal(logs, new File("logFiles/logs_" + guild.getId() + ".xml"));
     }
 
     public static LogChannels getLogChannels(Guild guild) throws JAXBException {
@@ -33,7 +32,7 @@ public class XMLHandler {
         jaxbContext = org.eclipse.persistence.jaxb.JAXBContextFactory
                 .createContext(new Class[]{LogChannels.class}, null);
 
-        File file = new File("logs_" + guild.getId() + ".xml");
+        File file = new File("logFiles/logs_" + guild.getId() + ".xml");
 
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
