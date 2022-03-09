@@ -38,22 +38,4 @@ public class XMLHandler {
 
         return (LogChannels) jaxbUnmarshaller.unmarshal(file);
     }
-
-    public static void sendJoinLeaveLog(WebhookEmbed embed, Guild guild) throws JAXBException {
-        JDA bot = Abrielle.getBot();
-        LogChannels logs = getLogChannels(guild);
-
-        WebhookClientBuilder builder = new WebhookClientBuilder(logs.getJoinLeaveHook());
-        builder.setThreadFactory((job) -> {
-            Thread thread = new Thread(job);
-            thread.setName("Join leave log");
-            thread.setDaemon(true);
-            return thread;
-        });
-        WebhookClient client = builder.build();
-
-        client.send(embed);
-
-        client.close();
-    }
 }

@@ -1,9 +1,16 @@
 package Abrielle.util.XMLHandling;
 
+import Abrielle.bot.Abrielle;
+import club.minnced.discord.webhook.WebhookClient;
+import club.minnced.discord.webhook.WebhookClientBuilder;
+import club.minnced.discord.webhook.send.WebhookEmbed;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -63,14 +70,18 @@ public class LogChannels {
         this.voiceHook = voiceHook;
     }
 
-    @Override
-    public String toString() {
-        return "LogChannels{" +
-                "joinLeaveHook='" + joinLeaveHook + '\'' +
-                ", memberHook='" + memberHook + '\'' +
-                ", messageHook='" + messageHook + '\'' +
-                ", serverHook='" + serverHook + '\'' +
-                ", voiceHook='" + voiceHook + '\'' +
-                '}';
+    public void sendJoinLeaveLog(WebhookEmbed embed, Guild guild) throws JAXBException {
+        WebhookClientBuilder builder = new WebhookClientBuilder(this.joinLeaveHook);
+        builder.setThreadFactory((job) -> {
+            Thread thread = new Thread(job);
+            thread.setName("Join leave log");
+            thread.setDaemon(true);
+            return thread;
+        });
+        WebhookClient client = builder.build();
+
+        client.send(embed);
+
+        client.close();
     }
 }
