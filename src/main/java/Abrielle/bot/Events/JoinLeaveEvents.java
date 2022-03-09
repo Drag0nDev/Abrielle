@@ -63,7 +63,7 @@ public class JoinLeaveEvents extends ListenerAdapter {
                     .setFooter(footer)
                     .setTimestamp(ZonedDateTime.now());
 
-            logs.sendJoinLeaveLog(embed.build(), guild);
+            logs.sendJoinLeaveLog(embed.build());
         } catch (JAXBException e) {
             LOGGER.error(e.getMessage());
         }
@@ -110,7 +110,7 @@ public class JoinLeaveEvents extends ListenerAdapter {
                     .setTimestamp(ZonedDateTime.now());
 
 
-            logs.sendJoinLeaveLog(embed.build(), guild);
+            logs.sendJoinLeaveLog(embed.build());
         } catch (JAXBException e) {
             LOGGER.error(e.getMessage());
         }

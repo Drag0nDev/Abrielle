@@ -70,18 +70,31 @@ public class LogChannels {
         this.voiceHook = voiceHook;
     }
 
-    public void sendJoinLeaveLog(WebhookEmbed embed, Guild guild) throws JAXBException {
-        WebhookClientBuilder builder = new WebhookClientBuilder(this.joinLeaveHook);
+    public void sendJoinLeaveLog(WebhookEmbed embed) throws JAXBException {
+        WebhookClient client = createClient(this.joinLeaveHook);
+
+        client.send(embed);
+
+        client.close();
+    }
+
+    public void sendServerLog(WebhookEmbed embed) throws JAXBException {
+        WebhookClient client = createClient(this.serverHook);
+
+        client.send(embed);
+
+        client.close();
+    }
+
+    private WebhookClient createClient(String url) {
+        WebhookClientBuilder builder = new WebhookClientBuilder(this.serverHook);
         builder.setThreadFactory((job) -> {
             Thread thread = new Thread(job);
             thread.setName("Join leave log");
             thread.setDaemon(true);
             return thread;
         });
-        WebhookClient client = builder.build();
 
-        client.send(embed);
-
-        client.close();
+        return builder.build();
     }
 }
