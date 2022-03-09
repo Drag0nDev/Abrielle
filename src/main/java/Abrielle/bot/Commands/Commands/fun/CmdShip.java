@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.w3c.dom.Text;
 
@@ -46,21 +47,31 @@ public record CmdShip(Abrielle bot) implements Command {
         Member member1 = null;
         Member member2 = null;
 
-        if (arguments.length == 1 && !msg.getMentionedMembers().isEmpty()) {
-            member1 = member;
-            member2 = msg.getMentionedMembers().get(0);
-        } else if (arguments.length == 2 && !msg.getMentionedMembers().isEmpty()) {
-            member1 = msg.getMentionedMembers().get(0);
-            member2 = msg.getMentionedMembers().get(1);
-        } else {
-            throw new AbrielleException("Please mention user(s) to ship with!");
+        try {
+            if (arguments.length == 1) {
+                member1 = member;
+                if (msg.getMentionedMembers().isEmpty())
+                    member2 = guild.retrieveMemberById(arguments[0]).complete();
+                else if (msg.getMentionedMembers().size() == 1)
+                    member2 = msg.getMentionedMembers().get(0);
+                else
+                    throw new AbrielleException("Please provide a valid id/mention.\n Roles are not allowed as mention!");
+            } else if (arguments.length == 2) {
+                member1 = guild.retrieveMemberById(arguments[0].replaceAll("[^[0-9]]", "")).complete();
+                member2 = guild.retrieveMemberById(arguments[1].replaceAll("[^[0-9]]", "")).complete();
+            } else {
+                throw new AbrielleException("Please mention user(s) to ship with!");
+            }
+        } catch (NumberFormatException | ErrorResponseException e) {
+            throw new AbrielleException("Please use id or mentions on this command!\n**Role mentions are not allowed!**");
         }
+
 
         ship(member1, member2, tc);
     }
 
     private void ship(Member member1, Member member2, TextChannel tc) throws IOException, URISyntaxException {
-        File file = new File("test.png");
+        File file = new File("card.png");
         Random rand = new Random();
         int percent = rand.nextInt(100);
         String outsight;
@@ -86,6 +97,10 @@ public record CmdShip(Abrielle bot) implements Command {
         ).build();
 
         tc.sendMessage(msg).addFile(file, "card.png").queue();
+
+        if (!file.delete())
+            Abrielle.getLogger().error("File " + file.getName() + " failed to delete.\n" +
+                    "Path: " + file.getAbsolutePath());
     }
 
     private void makeCard(Member member1, Member member2, File file, Integer percent) throws IOException, URISyntaxException {

@@ -39,6 +39,7 @@ public class CmdHelp implements Command {
         categories.add("admin");
         categories.add("fun");
         categories.add("info");
+        categories.add("logging");
         categories.add("owner");
         categories.add("reactions");
     }

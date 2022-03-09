@@ -63,6 +63,11 @@
             <version>5.0.0-alpha.5</version>
         </dependency>
         <dependency>
+            <groupId>club.minnced</groupId>
+            <artifactId>discord-webhooks</artifactId>
+            <version>0.7.5</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.rainestormee</groupId>
             <artifactId>jda-command</artifactId>
             <version>1.1.6</version>
@@ -101,6 +106,16 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0-rc2</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+            <version>3.0.2</version>
         </dependency>
     </dependencies>
 

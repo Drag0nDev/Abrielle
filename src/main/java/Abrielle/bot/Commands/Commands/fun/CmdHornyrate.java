@@ -3,7 +3,6 @@ package Abrielle.bot.Commands.Commands.fun;
 import Abrielle.bot.Abrielle;
 import Abrielle.bot.Commands.Command;
 import Abrielle.constants.Colors;
-import Abrielle.util.Exceptions.AbrielleException;
 import com.github.rainestormee.jdacommand.CommandAttribute;
 import com.github.rainestormee.jdacommand.CommandDescription;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,19 +16,19 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @CommandDescription(
-        name = "cuterate",
-        description = "Get the cuteness of a person.",
-        triggers = {"cuterate", "howcute"},
+        name = "hornyrate",
+        description = "Get the horniness of a person.",
+        triggers = {"hornyrate", "howhorny"},
         attributes = {
                 @CommandAttribute(key = "category", value = "fun"),
                 @CommandAttribute(key = "usage", value = "[command | alias] <user mention>"),
-                @CommandAttribute(key = "examples", value = "`a!cuterate`\n" +
-                        "`a!cuterate 418037700751261708`\n" +
-                        "`a!cuterate @Drag0n#6666`")
+                @CommandAttribute(key = "examples", value = "`a!hornyrate`\n" +
+                        "`a!hornyrate 418037700751261708`\n" +
+                        "`a!hornyrate @Drag0n#6666`")
         }
 )
 
-public record CmdCuterate(Abrielle bot) implements Command {
+public record CmdHornyrate(Abrielle bot) implements Command {
 
     @Override
     public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) {
@@ -49,31 +48,27 @@ public record CmdCuterate(Abrielle bot) implements Command {
     }
 
     @Override
-    public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws AbrielleException {
+    public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) {
         String[] arguments = bot.getArguments(msg);
         Member target;
 
-        try {
-            if (arguments.length > 0) {
-                if (!msg.getMentionedMembers().isEmpty()) {
-                    target = msg.getMentionedMembers().get(0);
-                } else {
-                    target = guild.getMemberById(arguments[0]);
-                }
+        if (arguments.length > 0) {
+            if (!msg.getMentionedMembers().isEmpty()) {
+                target = msg.getMentionedMembers().get(0);
             } else {
-                target = msg.getMember();
+                target = guild.getMemberById(arguments[0]);
             }
+        } else {
+            target = msg.getMember();
+        }
 
-            if (target == null) {
-                try {
-                    throw new Exception("member value is null");
-                } catch (Exception e) {
-                    Abrielle.getLogger().error(String.valueOf(e));
-                }
-                return;
+        if (target == null) {
+            try {
+                throw new Exception("member value is null");
+            } catch (Exception e) {
+                Abrielle.getLogger().error(String.valueOf(e));
             }
-        } catch (NumberFormatException e) {
-            throw new AbrielleException("Please use id or mentions on this command!\n**Role mentions are not allowed!**");
+            return;
         }
 
         tc.sendMessageEmbeds(first()).queue(message -> {
@@ -88,13 +83,15 @@ public record CmdCuterate(Abrielle bot) implements Command {
                 .setColor(embed.getColor())
                 .setTimestamp(ZonedDateTime.now());
         StringBuilder desc = new StringBuilder();
-        int cuterate = getCuteRate();
+        int hornyrate = getCuteRate();
 
-        desc.append("**").append(target.getUser().getAsTag()).append("** cuteness is ").append("**").append(cuterate).append("%**!");
+        desc.append("**").append(target.getUser().getAsTag()).append("** honryness is ").append("**").append(hornyrate).append("%**!");
         last.setDescription(desc);
 
-        if (cuterate > 75)
-            last.setImage("https://i.gifer.com/XfFd.gif");
+        if (hornyrate == 69)
+            last.setImage("https://i.imgur.com/OdldehD.gif");
+        else if (hornyrate > 75)
+            last.setImage("https://i.imgur.com/epiEO4b.gif");
 
         try {
             TimeUnit.SECONDS.sleep(1);

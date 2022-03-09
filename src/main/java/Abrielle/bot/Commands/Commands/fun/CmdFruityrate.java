@@ -17,22 +17,20 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @CommandDescription(
-        name = "cuterate",
-        description = "Get the cuteness of a person.",
-        triggers = {"cuterate", "howcute"},
+        name = "fruityrate",
+        description = "Get the fruitiness of a person.",
+        triggers = {"fruityrate", "howfruity"},
         attributes = {
                 @CommandAttribute(key = "category", value = "fun"),
-                @CommandAttribute(key = "usage", value = "[command | alias] <user mention>"),
-                @CommandAttribute(key = "examples", value = "`a!cuterate`\n" +
-                        "`a!cuterate 418037700751261708`\n" +
-                        "`a!cuterate @Drag0n#6666`")
+                @CommandAttribute(key = "usage", value = "[command | alias]"),
+                @CommandAttribute(key = "examples", value = "a!fruityrate @Drag0n#6669"),
         }
 )
 
-public record CmdCuterate(Abrielle bot) implements Command {
+public record CmdFruityrate(Abrielle bot) implements Command {
 
     @Override
-    public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) {
+    public void runSlash(Guild guild, TextChannel tc, Member member, SlashCommandInteractionEvent event, InteractionHook hook) throws Exception {
         Member target;
 
         if (event.getOption("user") == null)
@@ -49,7 +47,7 @@ public record CmdCuterate(Abrielle bot) implements Command {
     }
 
     @Override
-    public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws AbrielleException {
+    public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) throws Exception {
         String[] arguments = bot.getArguments(msg);
         Member target;
 
@@ -88,13 +86,10 @@ public record CmdCuterate(Abrielle bot) implements Command {
                 .setColor(embed.getColor())
                 .setTimestamp(ZonedDateTime.now());
         StringBuilder desc = new StringBuilder();
-        int cuterate = getCuteRate();
+        int fruityrate = getFruityRate();
 
-        desc.append("**").append(target.getUser().getAsTag()).append("** cuteness is ").append("**").append(cuterate).append("%**!");
+        desc.append("**").append(target.getUser().getAsTag()).append("** is ").append("**").append(fruityrate).append("%** gay!");
         last.setDescription(desc);
-
-        if (cuterate > 75)
-            last.setImage("https://i.gifer.com/XfFd.gif");
 
         try {
             TimeUnit.SECONDS.sleep(1);
@@ -105,7 +100,7 @@ public record CmdCuterate(Abrielle bot) implements Command {
         msg.editMessageEmbeds(last.build()).queue();
     }
 
-    private int getCuteRate() {
+    private int getFruityRate() {
         return new Random().nextInt(101);
     }
 

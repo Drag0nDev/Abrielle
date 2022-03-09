@@ -1,13 +1,12 @@
 package Abrielle.bot.Commands;
 
 import Abrielle.bot.Abrielle;
-import Abrielle.bot.Commands.Commands.admin.CmdSay;
-import Abrielle.bot.Commands.Commands.admin.CmdSetActivity;
-import Abrielle.bot.Commands.Commands.fun.CmdShip;
-import Abrielle.bot.Commands.Commands.owner.CmdShutdown;
-import Abrielle.bot.Commands.Commands.reactions.*;
-import Abrielle.bot.Commands.Commands.fun.CmdCuterate;
+import Abrielle.bot.Commands.Commands.admin.*;
+import Abrielle.bot.Commands.Commands.fun.*;
 import Abrielle.bot.Commands.Commands.info.*;
+import Abrielle.bot.Commands.Commands.logging.CmdCreateLogs;
+import Abrielle.bot.Commands.Commands.owner.*;
+import Abrielle.bot.Commands.Commands.reactions.*;
 import Abrielle.bot.Events.Listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,9 @@ public class CommandLoader {
 
                 //fun commands
                 new CmdCuterate(bot),
+                new CmdFruityrate(bot),
+                new CmdGayrate(bot),
+                new CmdHornyrate(bot),
                 new CmdShip(bot),
 
                 //info commands
@@ -38,6 +40,9 @@ public class CommandLoader {
                 new CmdPing(bot),
                 new CmdServerAvatar(bot),
                 new CmdServerInfo(bot),
+
+                //logging
+                new CmdCreateLogs(bot),
 
                 //owner commands
                 new CmdShutdown(bot),

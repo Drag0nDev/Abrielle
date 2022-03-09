@@ -136,7 +136,7 @@ public class CommandListener extends ListenerAdapter {
 
             //find the used prefix
             List<String> prefix = bot.getConfig().getPrefix();
-            raw = getArgs(raw, prefix);
+            raw = getArgs(raw.toLowerCase(), prefix);
             int i;
             String[] args = Arrays.copyOfRange(raw.trim().split("\\s+"), 0, 10);
 

@@ -2,4 +2,5 @@
 /target
 /.idea
 
+/src/main/java/Abrielle/bot/Commands/Commands/owner/CmdTest.java
 /src/main/resources/config.json
