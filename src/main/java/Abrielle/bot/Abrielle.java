@@ -2,6 +2,7 @@ package Abrielle.bot;
 
 import Abrielle.bot.Commands.CommandListener;
 import Abrielle.bot.Commands.CommandLoader;
+import Abrielle.bot.Events.ChannelEvents;
 import Abrielle.bot.Events.JoinLeaveEvents;
 import Abrielle.bot.Events.Listener;
 import Abrielle.util.utils.Config;
@@ -83,6 +84,7 @@ public class Abrielle {
                 .addEventListeners(
                         new CommandListener(this, CMD_HANDLER),
                         new JoinLeaveEvents(this),
+                        new ChannelEvents(this),
                         new Listener(this),
                         waiter
                 )

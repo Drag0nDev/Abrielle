@@ -72,17 +72,13 @@ public class LogChannels {
 
     public void sendJoinLeaveLog(WebhookEmbed embed) throws JAXBException {
         WebhookClient client = createClient(this.joinLeaveHook);
-
         client.send(embed);
-
         client.close();
     }
 
     public void sendServerLog(WebhookEmbed embed) throws JAXBException {
         WebhookClient client = createClient(this.serverHook);
-
         client.send(embed);
-
         client.close();
     }
 

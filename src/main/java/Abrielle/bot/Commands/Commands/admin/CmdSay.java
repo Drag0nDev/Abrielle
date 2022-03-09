@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 import static Abrielle.util.utils.Utils.getChannel;
 
@@ -65,7 +63,7 @@ public record CmdSay(Abrielle bot) implements Command {
         String[] args = bot.getArguments(msg);
         String[] msgToSend = new String[args.length - 1];
 
-        BaseGuildMessageChannel channel = getChannel(msg, guild, args, 0);
+        BaseGuildMessageChannel channel = getChannel(msg, guild, args);
 
         System.arraycopy(args, 1, msgToSend, 0, args.length - 1);
         String msgComplete = String.join(" ", msgToSend);

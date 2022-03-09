@@ -95,7 +95,7 @@ public class Utils {
         return guild.getVoiceChannels().stream().findFirst().get().getRegion().getName();
     }
 
-    public static @NotNull BaseGuildMessageChannel getChannel(Message msg, Guild guild, String[] args, int pos) throws AbrielleException {
+    public static @NotNull BaseGuildMessageChannel getChannel(Message msg, Guild guild, String[] args) throws AbrielleException {
         BaseGuildMessageChannel channel;
 
         if (msg.getMentionedChannels().isEmpty())
