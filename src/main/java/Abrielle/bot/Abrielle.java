@@ -2,6 +2,7 @@ package Abrielle.bot;
 
 import Abrielle.bot.Commands.CommandListener;
 import Abrielle.bot.Commands.CommandLoader;
+import Abrielle.bot.Events.JoinLeaveEvents;
 import Abrielle.bot.Events.Listener;
 import Abrielle.util.utils.Config;
 import com.github.rainestormee.jdacommand.CommandHandler;
@@ -59,16 +60,29 @@ public class Abrielle {
         CMD_HANDLER.registerCommands(new HashSet<>(commandLoader.getCommands()));
 
         bot = JDABuilder
-                .createDefault(config.getToken())
-                .disableIntents(GatewayIntent.GUILD_VOICE_STATES)
+                .create(config.getToken(), GatewayIntent.GUILD_MEMBERS)
                 .enableIntents(
                         GatewayIntent.GUILD_MEMBERS,
-                        GatewayIntent.GUILD_BANS
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_BANS,
+                        GatewayIntent.GUILD_EMOJIS,
+                        GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.GUILD_INVITES,
+                        GatewayIntent.GUILD_WEBHOOKS,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS
                 )
-                .disableCache(CacheFlag.VOICE_STATE)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .disableCache(
+                        CacheFlag.EMOTE,
+                        CacheFlag.VOICE_STATE,
+                        CacheFlag.CLIENT_STATUS,
+                        CacheFlag.ACTIVITY,
+                        CacheFlag.ONLINE_STATUS,
+                        CacheFlag.MEMBER_OVERRIDES,
+                        CacheFlag.ROLE_TAGS
+                )
                 .addEventListeners(
                         new CommandListener(this, CMD_HANDLER),
+                        new JoinLeaveEvents(this),
                         new Listener(this),
                         waiter
                 )
