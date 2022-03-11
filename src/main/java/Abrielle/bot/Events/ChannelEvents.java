@@ -184,7 +184,36 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelUpdateParent(@NotNull ChannelUpdateParentEvent event) {
-        super.onChannelUpdateParent(event);
+        Channel channel = event.getChannel();
+        Category olcCat = event.getOldValue();
+        Category newCat = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        if (olcCat == null || newCat == null)
+            return;
+
+        try {
+            LogChannels logs = getLogChannels(guild);
+            WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
+
+            EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " channel updated", null);
+            EmbedField nameField = new EmbedField(true, "Before", olcCat.getName());
+            EmbedField catField = new EmbedField(true, "After", newCat.getName());
+            EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
+
+            embed.setTitle(title)
+                    .setFooter(footer)
+                    .setDescription(channel.getAsMention() + " **changed category**")
+                    .setColor(Colors.LOGCHANGE.getCode())
+                    .addField(nameField)
+                    .addField(catField)
+                    .setTimestamp(ZonedDateTime.now());
+
+            logs.sendServerLog(embed.build());
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
