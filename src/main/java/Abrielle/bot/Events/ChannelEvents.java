@@ -48,19 +48,7 @@ public class ChannelEvents extends ListenerAdapter {
         try {
             LogChannels logs = getLogChannels(guild);
 
-            WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
-
-            EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " Channel created", null);
-            EmbedField nameField = new EmbedField(true, "Name", channel.getName());
-            EmbedField catField = new EmbedField(true, " Category", getCategory(channel, guild));
-            EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
-
-            embed.setTitle(title)
-                    .setFooter(footer)
-                    .setColor(Colors.LOGADD.getCode())
-                    .addField(nameField)
-                    .addField(catField)
-                    .setTimestamp(ZonedDateTime.now());
+            WebhookEmbedBuilder embed = baseEmbed(channel, guild, type, Colors.LOGADD.getCode(), "created");
 
             switch (channel.getType()) {
                 case TEXT, NEWS -> {
@@ -116,17 +104,55 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelDelete(@NotNull ChannelDeleteEvent event) {
-        super.onChannelDelete(event);
+        Channel channel = event.getChannel();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        try {
+            LogChannels logs = getLogChannels(guild);
+            WebhookEmbedBuilder embed = baseEmbed(channel, guild, type, Colors.LOGREMOVE.getCode(), "deleted");
+            logs.sendServerLog(embed.build());
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
     public void onChannelUpdateName(@NotNull ChannelUpdateNameEvent event) {
-        super.onChannelUpdateName(event);
+        Channel channel = event.getChannel();
+        String oldName = event.getOldValue();
+        String newName = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        if (oldName == null || newName == null)
+            return;
+
+        try {
+            LogChannels logs = getLogChannels(guild);
+            WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
+
+            EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " channel updated", null);
+            EmbedField nameField = new EmbedField(true, "Before", oldName);
+            EmbedField catField = new EmbedField(true, " After", newName);
+            EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
+
+            embed.setTitle(title)
+                    .setFooter(footer)
+                    .setColor(Colors.LOGCHANGE.getCode())
+                    .addField(nameField)
+                    .addField(catField)
+                    .setTimestamp(ZonedDateTime.now());
+
+            logs.sendServerLog(embed.build());
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
     public void onChannelUpdateNSFW(@NotNull ChannelUpdateNSFWEvent event) {
-        super.onChannelUpdateNSFW(event);
+
     }
 
     @Override
@@ -157,6 +183,24 @@ public class ChannelEvents extends ListenerAdapter {
     @Override
     public void onChannelUpdateUserLimit(@NotNull ChannelUpdateUserLimitEvent event) {
         super.onChannelUpdateUserLimit(event);
+    }
+
+    private WebhookEmbedBuilder baseEmbed(Channel channel, Guild guild, ChannelType type, int color, String action) {
+        WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
+
+        EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " channel " + action, null);
+        EmbedField nameField = new EmbedField(true, "Name", channel.getName());
+        EmbedField catField = new EmbedField(true, " Category", getCategory(channel, guild));
+        EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
+
+        embed.setTitle(title)
+                .setFooter(footer)
+                .setColor(color)
+                .addField(nameField)
+                .addField(catField)
+                .setTimestamp(ZonedDateTime.now());
+
+        return embed;
     }
 
     private String getCategory(Channel channel, Guild guild) {
