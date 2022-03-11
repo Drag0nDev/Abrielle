@@ -9,8 +9,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.exceptions.HttpException;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -77,16 +76,20 @@ public class LogChannels {
     }
 
     public void sendServerLog(WebhookEmbed embed) throws JAXBException {
-        WebhookClient client = createClient(this.serverHook);
-        client.send(embed);
-        client.close();
+        try {
+            WebhookClient client = createClient(this.serverHook);
+            client.send(embed);
+            client.close();
+        } catch (HttpException e) {
+            System.out.println("caught");
+        }
     }
 
     private WebhookClient createClient(String url) {
-        WebhookClientBuilder builder = new WebhookClientBuilder(this.serverHook);
+        WebhookClientBuilder builder = new WebhookClientBuilder(url);
         builder.setThreadFactory((job) -> {
             Thread thread = new Thread(job);
-            thread.setName("Join leave log");
+            thread.setName("log");
             thread.setDaemon(true);
             return thread;
         });
