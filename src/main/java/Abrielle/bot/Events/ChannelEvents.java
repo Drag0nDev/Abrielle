@@ -25,7 +25,6 @@ import java.util.*;
 
 import static Abrielle.util.XMLHandling.XMLHandler.getLogChannels;
 import static Abrielle.util.utils.Utils.capitalize;
-import static net.dv8tion.jda.api.entities.ChannelType.*;
 
 public class ChannelEvents extends ListenerAdapter {
 
@@ -134,7 +133,7 @@ public class ChannelEvents extends ListenerAdapter {
 
             EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " channel updated", null);
             EmbedField nameField = new EmbedField(true, "Before", oldName);
-            EmbedField catField = new EmbedField(true, " After", newName);
+            EmbedField catField = new EmbedField(true, "After", newName);
             EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
 
             embed.setTitle(title)
@@ -152,7 +151,35 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelUpdateNSFW(@NotNull ChannelUpdateNSFWEvent event) {
+        Channel channel = event.getChannel();
+        Boolean oldState = event.getOldValue();
+        Boolean newState = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
 
+        if (oldState == null || newState == null)
+            return;
+
+        try {
+            LogChannels logs = getLogChannels(guild);
+            WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
+
+            EmbedTitle title = new EmbedTitle(capitalize(type.name()) + " channel updated NSFW state", null);
+            EmbedField nameField = new EmbedField(true, "Before", oldState ? "NSFW" : "Not NSFW");
+            EmbedField catField = new EmbedField(true, "After", newState ? "NSFW" : "Not NSFW");
+            EmbedFooter footer = new EmbedFooter("Channel ID: " + channel.getId(), null);
+
+            embed.setTitle(title)
+                    .setFooter(footer)
+                    .setColor(Colors.LOGCHANGE.getCode())
+                    .addField(nameField)
+                    .addField(catField)
+                    .setTimestamp(ZonedDateTime.now());
+
+            logs.sendServerLog(embed.build());
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
