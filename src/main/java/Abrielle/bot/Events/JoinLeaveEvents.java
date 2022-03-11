@@ -102,6 +102,7 @@ public class JoinLeaveEvents extends ListenerAdapter {
 
             embed.setTitle(title)
                     .setColor(Colors.LEAVE.getCode())
+                    .setDescription(member.getAsMention() + " left the server!")
                     .setAuthor(author)
                     .addField(membercount)
                     .addField(accountAge)
