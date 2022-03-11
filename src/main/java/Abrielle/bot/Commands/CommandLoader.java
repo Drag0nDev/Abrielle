@@ -45,6 +45,7 @@ public class CommandLoader {
                 new CmdCreateLogs(bot),
 
                 //owner commands
+                new CmdRestart(bot),
                 new CmdShutdown(bot),
                 new CmdSetActivity(bot),
 
