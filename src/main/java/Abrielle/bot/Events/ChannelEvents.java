@@ -207,7 +207,20 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelUpdateSlowmode(@NotNull ChannelUpdateSlowmodeEvent event) {
-        super.onChannelUpdateSlowmode(event);
+        Channel channel = event.getChannel();
+        Integer oldLength = event.getOldValue();
+        Integer newLength = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        if (oldLength == null || newLength == null)
+            return;
+
+        try {
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, String.valueOf(oldLength), String.valueOf(newLength), channel.getAsMention() + " **changed slowmode time"));
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
