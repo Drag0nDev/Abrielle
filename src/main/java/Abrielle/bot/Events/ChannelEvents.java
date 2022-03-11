@@ -199,7 +199,7 @@ public class ChannelEvents extends ListenerAdapter {
             return;
 
         try {
-            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldName.getName(), newName.name(), channel.getAsMention() + " **changed region"));
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldName.getName(), newName.name(), channel.getAsMention() + " **changed region**"));
         } catch (JAXBException e) {
             LOGGER.error(e.getMessage());
         }
@@ -217,7 +217,7 @@ public class ChannelEvents extends ListenerAdapter {
             return;
 
         try {
-            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, String.valueOf(oldLength), String.valueOf(newLength), channel.getAsMention() + " **changed slowmode time"));
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldLength + "s", newLength + "s", channel.getAsMention() + " **changed slowmode time**"));
         } catch (JAXBException e) {
             LOGGER.error(e.getMessage());
         }

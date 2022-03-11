@@ -19,7 +19,7 @@ import static Abrielle.util.utils.Utils.jsonToEmbed;
 @CommandDescription(
         name = "restart",
         description = "Restart the bot with an update",
-        triggers = {"restart"},
+        triggers = {"restart", "update"},
         attributes = {
                 @CommandAttribute(key = "category", value = "owner"),
                 @CommandAttribute(key = "usage", value = "[command | alias]"),
