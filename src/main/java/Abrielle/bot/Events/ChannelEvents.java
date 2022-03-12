@@ -3,7 +3,6 @@ package Abrielle.bot.Events;
 import Abrielle.bot.Abrielle;
 import Abrielle.constants.Colors;
 import Abrielle.util.XMLHandling.LogChannels;
-import Abrielle.util.utils.Config;
 import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbed.*;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
@@ -16,12 +15,9 @@ import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -32,10 +28,9 @@ public class ChannelEvents extends ListenerAdapter {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
-    private final Config config = new Config();
     private final Abrielle bot;
 
-    public ChannelEvents(Abrielle bot) throws IOException, ParseException, URISyntaxException {
+    public ChannelEvents(Abrielle bot) {
         this.bot = bot;
     }
 
@@ -217,7 +212,7 @@ public class ChannelEvents extends ListenerAdapter {
             return;
 
         try {
-            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldLength + "s", newLength + "s", channel.getAsMention() + " **changed slowmode time**"));
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldLength + "s", newLength + "s", channel.getAsMention() + " **changed slow mode time**"));
         } catch (JAXBException e) {
             LOGGER.error(e.getMessage());
         }
@@ -225,7 +220,20 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelUpdateTopic(@NotNull ChannelUpdateTopicEvent event) {
-        super.onChannelUpdateTopic(event);
+        Channel channel = event.getChannel();
+        String oldTopic = event.getOldValue();
+        String newTopic = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        if (oldTopic == null || newTopic == null)
+            return;
+
+        try {
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldTopic, newTopic, channel.getAsMention() + " **changed topic**"));
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
