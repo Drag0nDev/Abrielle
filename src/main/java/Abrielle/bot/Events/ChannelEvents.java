@@ -238,7 +238,20 @@ public class ChannelEvents extends ListenerAdapter {
 
     @Override
     public void onChannelUpdateType(@NotNull ChannelUpdateTypeEvent event) {
-        super.onChannelUpdateType(event);
+        Channel channel = event.getChannel();
+        ChannelType oldType = event.getOldValue();
+        ChannelType newType = event.getNewValue();
+        Guild guild = event.getGuild();
+        ChannelType type = channel.getType();
+
+        if (oldType == null || newType == null)
+            return;
+
+        try {
+            getLogChannels(guild).sendServerLog(baseEmbed(channel, type, oldType.name(), newType.name(), channel.getAsMention() + " **changed type**"));
+        } catch (JAXBException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
