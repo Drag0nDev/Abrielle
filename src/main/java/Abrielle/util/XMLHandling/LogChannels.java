@@ -3,13 +3,14 @@ package Abrielle.util.XMLHandling;
 import Abrielle.bot.Abrielle;
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.WebhookClientBuilder;
+import club.minnced.discord.webhook.exception.HttpException;
 import club.minnced.discord.webhook.send.WebhookEmbed;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import net.dv8tion.jda.api.exceptions.HttpException;
+import org.slf4j.Logger;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -70,19 +71,27 @@ public class LogChannels {
     }
 
     public void sendJoinLeaveLog(WebhookEmbed embed) throws JAXBException {
+        Logger LOGGER = Abrielle.getLogger();
         WebhookClient client = createClient(this.joinLeaveHook);
-        client.send(embed);
-        client.close();
+        sendEmbed(embed, LOGGER, client);
     }
 
     public void sendServerLog(WebhookEmbed embed) throws JAXBException {
-        try {
-            WebhookClient client = createClient(this.serverHook);
-            client.send(embed);
-            client.close();
-        } catch (HttpException e) {
-            System.out.println("caught");
-        }
+        Logger LOGGER = Abrielle.getLogger();
+        WebhookClient client = createClient(this.serverHook);
+        sendEmbed(embed, LOGGER, client);
+    }
+
+    private void sendEmbed(WebhookEmbed embed, Logger LOGGER, WebhookClient client) {
+        WebhookClient.setDefaultErrorHandler((wClient, msg, throwable) -> {
+            if (throwable != null)
+                LOGGER.error(throwable.getMessage());
+
+            if (throwable instanceof HttpException ex && ex.getCode() == 404)
+                client.close();
+        });
+        client.send(embed);
+        client.close();
     }
 
     private WebhookClient createClient(String url) {
