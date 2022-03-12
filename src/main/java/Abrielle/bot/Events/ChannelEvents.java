@@ -28,11 +28,8 @@ public class ChannelEvents extends ListenerAdapter {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
-    private final Abrielle bot;
 
-    public ChannelEvents(Abrielle bot) {
-        this.bot = bot;
-    }
+    public ChannelEvents() {}
 
     @Override
     public void onChannelCreate(@NotNull ChannelCreateEvent event) {

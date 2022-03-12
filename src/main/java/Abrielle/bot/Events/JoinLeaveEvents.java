@@ -30,11 +30,8 @@ import static Abrielle.util.XMLHandling.XMLHandler.getLogChannels;
 public class JoinLeaveEvents extends ListenerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
-    private final Config config = new Config();
-    private final Abrielle bot;
 
-    public JoinLeaveEvents(Abrielle bot) throws IOException, ParseException, URISyntaxException {
-        this.bot = bot;
+    public JoinLeaveEvents()  {
     }
 
     @Override

@@ -15,11 +15,8 @@ import java.net.URISyntaxException;
 public class Listener extends ListenerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
-    private final Config config = new Config();
-    private final Abrielle bot;
 
-    public Listener(Abrielle bot) throws IOException, ParseException, URISyntaxException {
-        this.bot = bot;
+    public Listener() {
     }
 
     @Override

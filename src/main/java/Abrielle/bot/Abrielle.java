@@ -57,7 +57,7 @@ public class Abrielle {
         }
     }
 
-    private void setup() throws LoginException, IOException, ParseException, URISyntaxException{
+    private void setup() throws LoginException {
         CMD_HANDLER.registerCommands(new HashSet<>(commandLoader.getCommands()));
 
         bot = JDABuilder
@@ -83,9 +83,9 @@ public class Abrielle {
                 )
                 .addEventListeners(
                         new CommandListener(this, CMD_HANDLER),
-                        new JoinLeaveEvents(this),
-                        new ChannelEvents(this),
-                        new Listener(this),
+                        new JoinLeaveEvents(),
+                        new ChannelEvents(),
+                        new Listener(),
                         waiter
                 )
                 .setActivity(Activity.watching("over all senpai's"))
