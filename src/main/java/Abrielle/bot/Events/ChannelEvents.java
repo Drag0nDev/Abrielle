@@ -1,6 +1,5 @@
 package Abrielle.bot.Events;
 
-import Abrielle.bot.Abrielle;
 import Abrielle.constants.Colors;
 import Abrielle.util.XMLHandling.LogChannels;
 import club.minnced.discord.webhook.send.WebhookEmbed;
@@ -23,6 +22,7 @@ import java.util.*;
 
 import static Abrielle.util.XMLHandling.XMLHandler.getLogChannels;
 import static Abrielle.util.utils.Utils.capitalize;
+import static Abrielle.util.utils.Utils.getPerms;
 
 public class ChannelEvents extends ListenerAdapter {
 
@@ -327,22 +327,5 @@ public class ChannelEvents extends ListenerAdapter {
             default:
                 return "No category";
         }
-    }
-
-    private String getPerms(EnumSet<Permission> allowed, EnumSet<Permission> denied) {
-        if (allowed.isEmpty() && denied.isEmpty())
-            return "";
-
-        StringJoiner perms = new StringJoiner("\n");
-
-        for (Permission perm : allowed) {
-            perms.add(perm.getName() + " ✅");
-        }
-
-        for (Permission perm : denied) {
-            perms.add(perm.getName() + " ❌");
-        }
-
-        return perms.toString();
     }
 }

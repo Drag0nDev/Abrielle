@@ -3,6 +3,7 @@ package Abrielle.util.utils;
 import Abrielle.util.Exceptions.AbrielleException;
 import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,13 +14,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static @NotNull InputStream getFile(@NotNull String fileName) throws URISyntaxException {
+    public static @NotNull InputStream getFile(@NotNull String fileName) {
         ClassLoader classLoader = Utils.class.getClassLoader();
         InputStream resource = classLoader.getResourceAsStream(fileName);
         if (resource == null) {
@@ -191,5 +194,22 @@ public class Utils {
     public static String capitalize(String str) {
         if (str.length() == 0) return str;
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
+    public static String getPerms(EnumSet<Permission> allowed, EnumSet<Permission> denied) {
+        if (allowed.isEmpty() && denied.isEmpty())
+            return "";
+
+        StringJoiner perms = new StringJoiner("\n");
+
+        for (Permission perm : allowed) {
+            perms.add(perm.getName() + " ✅");
+        }
+
+        for (Permission perm : denied) {
+            perms.add(perm.getName() + " ❌");
+        }
+
+        return perms.toString();
     }
 }
