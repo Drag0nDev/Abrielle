@@ -2,7 +2,7 @@ package Abrielle.bot.Commands.Commands.fun;
 
 import com.github.rainestormee.jdacommand.CommandAttribute;
 import com.github.rainestormee.jdacommand.CommandDescription;
-import hinata.bot.Commands.Command;
+import Abrielle.bot.Commands.Command;
 import Abrielle.bot.Abrielle;
 import Abrielle.constants.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
