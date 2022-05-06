@@ -1,16 +1,18 @@
 package Abrielle.bot.Commands.Commands.fun;
 
+import Abrielle.bot.Abrielle;
+import Abrielle.bot.Commands.Command;
+import Abrielle.constants.Colors;
+import Abrielle.util.Exceptions.AbrielleException;
 import com.github.rainestormee.jdacommand.CommandAttribute;
 import com.github.rainestormee.jdacommand.CommandDescription;
-import Abrielle.bot.Commands.Command;
-import Abrielle.bot.Abrielle;
-import Abrielle.constants.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import org.w3c.dom.Text;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
