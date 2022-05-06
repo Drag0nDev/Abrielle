@@ -31,6 +31,7 @@ public class CommandLoader {
                 new CmdGayrate(bot),
                 new CmdHornyrate(bot),
                 new CmdShip(bot),
+                new CmdSimprate(bot),
 
                 //info commands
                 new CmdAvatar(bot),
