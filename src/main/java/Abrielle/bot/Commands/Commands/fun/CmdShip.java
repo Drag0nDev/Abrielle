@@ -34,7 +34,7 @@ import static Abrielle.util.utils.Utils.getFile;
         description = "Ship 2 people",
         triggers = {"ship"},
         attributes = {
-                @CommandAttribute(key = "category", value = "ship"),
+                @CommandAttribute(key = "category", value = "fun"),
                 @CommandAttribute(key = "usage", value = "[command | alias] [mention/id] [mention/id]"),
                 @CommandAttribute(key = "examples", value = "a!ship @yana @seem"),
         }
