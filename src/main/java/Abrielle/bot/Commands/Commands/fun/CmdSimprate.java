@@ -37,7 +37,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.USER;
 public record CmdSimprate(Abrielle bot) implements Command {
     @Override
     public void runCommand(Message msg, Guild guild, TextChannel tc, Member member) {
-        EmbedBuilder embed = new EmbedBuilder().setTitle("howgay")
+        EmbedBuilder embed = new EmbedBuilder().setTitle("simprate")
                 .setColor(Colors.NORMAL.getCode())
                 .setDescription("Calculating")
                 .setTimestamp(ZonedDateTime.now());
